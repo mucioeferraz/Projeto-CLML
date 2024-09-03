@@ -6,7 +6,7 @@
 
 ### Integrantes
 	Caroline Ribeiro Ferreira 
-  Leonardo dos Reis Olher
+ 	Leonardo dos Reis Olher
 	Liliane Gonçalves de Brito Ferraz 
 	Mucio Emanuel Feitosa Ferraz Filho
 
