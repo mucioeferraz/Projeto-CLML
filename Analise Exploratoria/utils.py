@@ -7,6 +7,7 @@ import torch
 from sklearn.preprocessing import LabelEncoder
 from pmdarima.arima import auto_arima
 import gc
+from statsmodels.tsa.stattools import adfuller
 
 def df_import(year_range):
 
@@ -178,3 +179,15 @@ def predict(x,y):
     print(f'AIC: {stepwise_model.aic()}')
 
     return stepwise_model
+
+
+
+def adf(y, uf, bioma):
+    result = adfuller(y, autolag='AIC')
+        
+    if result[1] > .05:
+        status = 'NÃO É ESTACIONARIA'
+    else:
+        status = 'É ESTACIONARIA'
+
+    return uf, bioma, result[0], result[1], status, result[4]
