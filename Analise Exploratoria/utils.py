@@ -120,68 +120,6 @@ def embedding_data(df):
 
 
 
-def df_train_test_split(df, filtro, perc=.75):
-
-    # FILTRAR DADOS
-    df_temp = df\
-        .loc[df['UF_BIOMA'] == filtro]\
-        .drop(['Estado','Bioma','UF_BIOMA'], axis=1)\
-        .sort_index(ascending=True)
-
-
-    # TRAIN TEST SPLIT
-    n = round(len(df_temp)*perc)
-    train = df_temp.iloc[:n]
-    test = df_temp[n:]
-
-
-    # X E Y - TRAIN 
-    x_train = train.drop('RiscoFogo', axis=1).values
-    y_train = train['RiscoFogo'].values
-
-
-    # X E Y - TEST 
-    x_test = test.drop('RiscoFogo', axis=1).values
-    y_test = test['RiscoFogo'].values
-
-    # X E Y_TRUE TRAIN
-    df_train = train.reset_index()
-    df_train['UF_BIOMA'] = filtro
-
-    # X E Y_TRUE DO TESTE
-    df_test = test.reset_index()
-    df_test['UF_BIOMA'] = filtro
-
-
-    return x_train, y_train, x_test, y_test, df_train, df_test
-
-
-
-def predict(x,y):
-    
-    stepwise_model = auto_arima(
-         y=y
-        ,X=x
-        ,start_p=1
-        ,start_q=1
-        ,max_p=6
-        ,max_q=6
-        ,start_P=0
-        ,seasonal=True
-        ,m=int(round(len(x)/5))
-        ,d=1
-        ,D=1
-        ,trace=False
-        ,error_action='ignore'
-        ,suppress_warnings=True
-        ,stepwise=True)
-    
-    print(f'AIC: {stepwise_model.aic()}')
-
-    return stepwise_model
-
-
-
 def adf(y, uf, bioma):
     result = adfuller(y, autolag='AIC')
         
