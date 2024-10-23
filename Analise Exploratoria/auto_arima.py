@@ -27,7 +27,7 @@ def train_test_split(df, train_size=.9):
     y_test = y[n:]
 
     # SE TAMANHO DO TREINO FOR MENOR QUE 365 DIAS, APLICAR SAZONALIDADE DE: TAM DF / NUMERO DE ANOS 
-    m = 180 if len(df.iloc[:n]) > 180 else round(len(df.iloc[:n])/len(df['Data'].iloc[:n].apply(lambda x: x.year).unique().tolist()))
+    m = 52 if len(df.iloc[:n]) > 52 else round(len(df.iloc[:n])/len(df['Data'].iloc[:n].apply(lambda x: x.year).unique().tolist()))
 
     return x_train, y_train, x_test, y_test, m
 
@@ -84,7 +84,7 @@ def test(model, df, x_test):
 def forecast(model, df, year=2024):
 
     # PREDICT ATÉ FINAL DO ANO ESPECIFICADO NA FUNÇÃO
-    n_periods = (datetime(year,12,31).date() - df['Data'].max()).days
+    n_periods = round(((datetime(year,12,31).date() - df['Data'].max()).days)/7)
 
     # FORECAST
     forecast = model.predict(n_periods=n_periods, exogenous=None)
@@ -101,15 +101,18 @@ def plot_forecast(forecast, df):
 
     # INCLUIR DATA NAS PREVISÕES DO FORECAST
     forecast = pd.DataFrame(forecast, columns=['Forecast'])
-    forecast.reset_index(drop=True, inplace=True)
-    forecast.reset_index(inplace=True)
+    forecast = forecast\
+        .reset_index(drop=True)\
+        .reset_index()
 
     # N + DATA MAXIMA
-    forecast['index'] = forecast['index'].apply(lambda x: df['Data'].max() + timedelta(days=x+1))
+    forecast['index'] = forecast['index'].apply(lambda x: df['Data'].max() + timedelta(weeks=x+1))
 
     # RENOMEAR PARA DATA
     forecast.rename(columns={'index':'Data'}, inplace=True)
     forecast.index = forecast['Data']
+    forecast['ano'] = forecast['Data'].apply(lambda x: x.year)
+    forecast['semana'] = forecast['Data'].apply(lambda x: x.isocalendar()[1])
 
     # TITULO QUE SERA PLOTADO NO GRAFICO
     uf = df['Estado'][df['Estado'].notnull()].unique().tolist()[0].upper()
