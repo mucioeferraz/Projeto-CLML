@@ -2,10 +2,6 @@ import pandas as pd
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import MinMaxScaler
 from warnings import filterwarnings; filterwarnings('ignore') # retira avisos
-from torch.nn import Embedding
-import torch
-from sklearn.preprocessing import LabelEncoder
-from pmdarima.arima import auto_arima
 import gc
 from statsmodels.tsa.stattools import adfuller
 
@@ -99,24 +95,6 @@ def rotulos(grafico):
                     padding=6,
                     fontsize=9,
                     bbox={'boxstyle': 'round,pad=0.3', 'facecolor': 'white', 'edgecolor': 'black'})
-
-
-
-def embedding_data(df):
-
-    # EMBEDDING ESTADO
-    emb = Embedding(num_embeddings=len(df['Estado'].unique().tolist()), embedding_dim=1)
-    uf_tensors = torch.tensor(LabelEncoder().fit_transform(df['Estado']))
-    df['Estado_emb'] = emb(uf_tensors).tolist()
-    df['Estado_emb'] = df['Estado_emb'].apply(lambda x: x[0])
-
-    # EMBEDDING BIOMA
-    emb = Embedding(num_embeddings=len(df['Bioma'].unique().tolist()), embedding_dim=1)
-    bioma_tensors = torch.tensor(LabelEncoder().fit_transform(df['Bioma']))
-    df['Bioma_emb'] = emb(bioma_tensors).tolist()
-    df['Bioma_emb'] = df['Bioma_emb'].apply(lambda x: x[0])
-
-    return df
 
 
 

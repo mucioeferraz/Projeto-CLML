@@ -38,13 +38,15 @@ def perc_outliers(df, nivel):
 
 
 
-def plot_inicial(df):
+def plot_inicial(df, rm):
 
     # LISTAR COLUNAS DO DATAFRAME
     cols = df.columns.tolist()
 
     # PERCORRER COLUNAS
     for col in cols:
+        
+        if col in rm: continue
 
         # REDIMENSIONAR GRAFICO
         plt.subplots(figsize=(15,5))

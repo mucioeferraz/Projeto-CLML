@@ -68,6 +68,10 @@ def test(model, df, x_test):
     # TESTAR MODELO
     y_pred = model.predict(n_periods=len(x_test), X=x_test)
 
+    # MINIMO = 0 E MAXIMO = 1
+    y_pred = np.min([y_pred, np.full(len(y_pred), 1)], axis=0)
+    y_pred = np.max([y_pred, np.full(len(y_pred), 0)], axis=0)
+
     # ADD PREDICT NO DF FINAL
     y_predict = np.full(len(df)-len(x_test), np.nan).tolist()
     y_predict.extend(y_pred.tolist())
